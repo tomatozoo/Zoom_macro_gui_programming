@@ -141,16 +141,126 @@ class MyApp(QMainWindow, QWidget):
 
         grid.addWidget(sunday, 0,6)
         
+        # AM 버튼
+        am = QPushButton('AM', self)
+        am.setFont(QFont('Times',20))
+        am.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        am.setMaximumHeight(30)
+        am.setCheckable(False)
+        am.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
 
-        grid.addWidget(QLabel('Subject Name :'), 1, 0)
-        grid.addWidget(QLabel('Zoom PMI :'), 2, 0)
-        grid.addWidget(QLabel('Zoom Password :'), 3, 0)
+        grid.addWidget(am, 1,0)
+        
+        # PM 버튼
+        pm = QPushButton('PM', self)
+        pm.setFont(QFont('Times',20))
+        pm.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        pm.setMaximumHeight(30)
+        pm.setCheckable(False)
+        pm.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
 
-        grid.addWidget(QLineEdit(), 1, 1)
-        grid.addWidget(QLineEdit(), 2, 1)
-        grid.addWidget(QLineEdit(), 3, 1)
+        grid.addWidget(pm, 3,0)      
+                
+        
+        # 시간 / 분 선택하기
+        cb = QComboBox(self)
+        cb.addItem('1')
+        cb.addItem('2')
+        cb.addItem('3')
+        cb.addItem('4')
+        cb.addItem('5')
+        cb.addItem('6')
+        cb.addItem('7')
+        cb.addItem('8')
+        cb.addItem('9')
+        cb.addItem('10')
+        cb.addItem('11')
+        cb.addItem('12')
+        cb.move(50, 50)
 
-        grid.addWidget(QLabel('Sound :'), 4, 0)
+        cb.activated[str].connect(self.onActivated)
+        grid.addWidget(cb, 2,1)            
+
+         # 분 선택하기
+        cb = QComboBox(self)
+        cb.addItem('0')
+        cb.addItem('1')
+        cb.addItem('2')
+        cb.addItem('3')
+        cb.addItem('4')
+        cb.addItem('5')
+        cb.addItem('6')
+        cb.addItem('7')
+        cb.addItem('8')
+        cb.addItem('9')
+        cb.addItem('10')
+        cb.addItem('11')
+        cb.addItem('12')
+        cb.addItem('13')
+        cb.addItem('14')
+        cb.addItem('15')
+        cb.addItem('16')
+        cb.addItem('17')
+        cb.addItem('18')
+        cb.addItem('19')
+        cb.addItem('20')
+        cb.addItem('21')
+        cb.addItem('22')
+        cb.addItem('23')
+        cb.addItem('24')
+        cb.addItem('25')
+        cb.addItem('26')
+        cb.addItem('27')
+        cb.addItem('28')
+        cb.addItem('29')
+        cb.addItem('30')
+        cb.addItem('31')
+        cb.addItem('32')
+        cb.addItem('33')
+        cb.addItem('34')
+        cb.addItem('35')
+        cb.addItem('36')
+        cb.addItem('37')
+        cb.addItem('38')
+        cb.addItem('39')
+        cb.addItem('40')
+        cb.addItem('41')
+        cb.addItem('42')
+        cb.addItem('43')
+        cb.addItem('44')
+        cb.addItem('45')
+        cb.addItem('46')
+        cb.addItem('47')
+        cb.addItem('48')
+        cb.addItem('49')
+        cb.addItem('50')
+        cb.addItem('51')
+        cb.addItem('52')
+        cb.addItem('53')
+        cb.addItem('54')
+        cb.addItem('55')
+        cb.addItem('56')
+        cb.addItem('57')
+        cb.addItem('58')
+        cb.addItem('59')
+        cb.move(50, 50)
+
+        cb.activated[str].connect(self.onActivated)
+        grid.addWidget(cb, 2,2)    
+        
+               
+        # 교과목 설정하기
+        grid.addWidget(QLabel('Subject Name :'), 4, 0)
+        grid.addWidget(QLabel('Zoom PMI :'), 5, 0)
+        grid.addWidget(QLabel('Zoom Password :'), 6, 0)
+
+        grid.addWidget(QLineEdit(), 4, 1)
+        grid.addWidget(QLineEdit(), 5, 1)
+        grid.addWidget(QLineEdit(), 6, 1)
+
+        grid.addWidget(QLabel('Sound :'), 7, 0)
         
         sound_on = QPushButton('On', self)
         sound_on.setFont(QFont('Times',20))
@@ -160,7 +270,7 @@ class MyApp(QMainWindow, QWidget):
         sound_on.toggle()
         #sound_on.clicked.connect(self.btn1_clicked)
 
-        grid.addWidget(sound_on, 4,1)
+        grid.addWidget(sound_on, 7,1)
 
         sound_off = QPushButton('Off', self)
         sound_off.setFont(QFont('Times',20))
@@ -170,7 +280,7 @@ class MyApp(QMainWindow, QWidget):
         sound_off.toggle()
         #sound_on.clicked.connect(self.btn1_clicked)
 
-        grid.addWidget(sound_off, 4,2)
+        grid.addWidget(sound_off, 7,2)
 
         OK = QPushButton('OK', self)
         OK.setFont(QFont('Times',20))
@@ -180,7 +290,7 @@ class MyApp(QMainWindow, QWidget):
         OK.toggle()
         #sound_on.clicked.connect(self.btn1_clicked)
 
-        grid.addWidget(OK, 4,0)
+        grid.addWidget(OK, 8,0)
         
         cancel = QPushButton('Cancel', self)
         cancel.setFont(QFont('Times',20))
@@ -190,7 +300,7 @@ class MyApp(QMainWindow, QWidget):
         cancel.toggle()
         #sound_on.clicked.connect(self.btn1_clicked)
 
-        grid.addWidget(cancel, 4,1)
+        grid.addWidget(cancel, 8,1)
                         
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
@@ -198,6 +308,13 @@ class MyApp(QMainWindow, QWidget):
 
         self.resize(600, 800)
         self.show()    
+
+    def OK_clicked(self):
+        pass
+    
+    def onActivated(self, text):
+        self.lbl.setText(text)
+        self.lbl.adjustSize()
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
