@@ -38,6 +38,7 @@ class MyApp(QMainWindow, QWidget):
         btn1.setMaximumHeight(100)
         btn1.setCheckable(False)
         btn1.toggle()
+        btn1.clicked.connect(self.btn1_clicked)
 
         grid.addWidget(btn1, 0,0)
         grid.addWidget(QLabel(), 1,0)
@@ -55,6 +56,148 @@ class MyApp(QMainWindow, QWidget):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def btn1_clicked(self):
+        QMessageBox.about(self, 'message', 'clicked')
+
+        # 그리드 레이아웃으로 화면을 구성합니다. 
+        grid = QGridLayout()
+        self.setLayout(grid)
+
+        # 월요일 버튼
+        monday = QPushButton('Mon', self)
+        monday.setFont(QFont('Times',20))
+        monday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        monday.setMaximumHeight(30)
+        monday.setCheckable(False)
+        monday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(monday, 0,0)
+
+        # 화요일 버튼
+        tuesday = QPushButton('Tue', self)
+        tuesday.setFont(QFont('Times',20))
+        tuesday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        tuesday.setMaximumHeight(30)
+        tuesday.setCheckable(False)
+        tuesday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(tuesday, 0,1)
+        
+        # 수요일 버튼
+        wednesday = QPushButton('Wed', self)
+        wednesday.setFont(QFont('Times',20))
+        wednesday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        wednesday.setMaximumHeight(30)
+        wednesday.setCheckable(False)
+        wednesday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(wednesday, 0,2)
+        
+        # 목요일 버튼
+        thursday = QPushButton('Thu', self)
+        thursday.setFont(QFont('Times',20))
+        thursday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        thursday.setMaximumHeight(30)
+        thursday.setCheckable(False)
+        thursday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(thursday, 0,3)
+
+        # 금요일 버튼
+        friday = QPushButton('Fri', self)
+        friday.setFont(QFont('Times',20))
+        friday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        friday.setMaximumHeight(30)
+        friday.setCheckable(False)
+        friday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(friday, 0,4)
+
+        # 토요일 버튼
+        saturday = QPushButton('Sat', self)
+        saturday.setFont(QFont('Times',20))
+        saturday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        saturday.setMaximumHeight(30)
+        saturday.setCheckable(False)
+        saturday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(saturday, 0,5)
+        
+        # 일요일 버튼
+        sunday = QPushButton('Sun', self)
+        sunday.setFont(QFont('Times',20))
+        sunday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        sunday.setMaximumHeight(30)
+        sunday.setCheckable(False)
+        sunday.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(sunday, 0,6)
+        
+
+        grid.addWidget(QLabel('Subject Name :'), 1, 0)
+        grid.addWidget(QLabel('Zoom PMI :'), 2, 0)
+        grid.addWidget(QLabel('Zoom Password :'), 3, 0)
+
+        grid.addWidget(QLineEdit(), 1, 1)
+        grid.addWidget(QLineEdit(), 2, 1)
+        grid.addWidget(QLineEdit(), 3, 1)
+
+        grid.addWidget(QLabel('Sound :'), 4, 0)
+        
+        sound_on = QPushButton('On', self)
+        sound_on.setFont(QFont('Times',20))
+        sound_on.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        sound_on.setMaximumHeight(30)
+        sound_on.setCheckable(False)
+        sound_on.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(sound_on, 4,1)
+
+        sound_off = QPushButton('Off', self)
+        sound_off.setFont(QFont('Times',20))
+        sound_off.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        sound_off.setMaximumHeight(30)
+        sound_off.setCheckable(False)
+        sound_off.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(sound_off, 4,2)
+
+        OK = QPushButton('OK', self)
+        OK.setFont(QFont('Times',20))
+        OK.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        OK.setMaximumHeight(30)
+        OK.setCheckable(False)
+        OK.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(OK, 4,0)
+        
+        cancel = QPushButton('Cancel', self)
+        cancel.setFont(QFont('Times',20))
+        cancel.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        cancel.setMaximumHeight(30)
+        cancel.setCheckable(False)
+        cancel.toggle()
+        #sound_on.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(cancel, 4,1)
+                        
+        vbox = QWidget(self)
+        self.setCentralWidget(vbox)
+        vbox.setLayout(grid)
+
+        self.resize(600, 800)
+        self.show()    
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
