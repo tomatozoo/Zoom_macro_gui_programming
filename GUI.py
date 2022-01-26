@@ -1,10 +1,9 @@
 # 모듈을 불러옵니다. 
 import sys
 from PyQt5.QtWidgets import *
-#qApp, QAction, QGridLayout, QApplication, QWidget, QPushButton, QToolTip, QMainWindow, QDesktopWidget, QLabel, QVBoxLayout, QLabel, QLineEdit, QTextEdit
 from PyQt5.QtGui import *
-#QIcon, QFont
 from PyQt5.QtCore import QCoreApplication, QDate, Qt
+from PyQt5 import QtSql
 
 
 # 메인 클래스를 계획합니다. 
@@ -33,8 +32,8 @@ class MyApp(QMainWindow, QWidget):
 
         # 첫 화면에 두기 위한 버튼을 생성합니다. 
         btn1 = QPushButton('Create New', self)
-        btn1.setFont(QFont('Times',20))
-        btn1.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        btn1.setFont(QFont('맑은 고딕',20))
+        btn1.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         btn1.setMaximumHeight(100)
         btn1.setCheckable(False)
         btn1.toggle()
@@ -58,8 +57,6 @@ class MyApp(QMainWindow, QWidget):
         self.move(qr.topLeft())
 
     def btn1_clicked(self):
-        QMessageBox.about(self, 'message', 'clicked')
-
         # 그리드 레이아웃으로 화면을 구성합니다. 
         grid = QGridLayout()
         self.setLayout(grid)
@@ -69,7 +66,7 @@ class MyApp(QMainWindow, QWidget):
         monday.setFont(QFont('Times',20))
         monday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
         monday.setMaximumHeight(30)
-        monday.setCheckable(False)
+        monday.setCheckable(True)
         monday.toggle()
         #sound_on.clicked.connect(self.btn1_clicked)
 
@@ -180,7 +177,6 @@ class MyApp(QMainWindow, QWidget):
         cb.addItem('12')
         cb.move(50, 50)
 
-        cb.activated[str].connect(self.onActivated)
         grid.addWidget(cb, 2,1)            
 
          # 분 선택하기
@@ -247,7 +243,6 @@ class MyApp(QMainWindow, QWidget):
         cb.addItem('59')
         cb.move(50, 50)
 
-        cb.activated[str].connect(self.onActivated)
         grid.addWidget(cb, 2,2)    
         
                
@@ -288,7 +283,7 @@ class MyApp(QMainWindow, QWidget):
         OK.setMaximumHeight(30)
         OK.setCheckable(False)
         OK.toggle()
-        #sound_on.clicked.connect(self.btn1_clicked)
+        OK.clicked.connect(self.OK_clicked)
 
         grid.addWidget(OK, 8,0)
         
@@ -298,7 +293,7 @@ class MyApp(QMainWindow, QWidget):
         cancel.setMaximumHeight(30)
         cancel.setCheckable(False)
         cancel.toggle()
-        #sound_on.clicked.connect(self.btn1_clicked)
+        cancel.clicked.connect(self.cancel_clicked)
 
         grid.addWidget(cancel, 8,1)
                         
@@ -310,8 +305,32 @@ class MyApp(QMainWindow, QWidget):
         self.show()    
 
     def OK_clicked(self):
-        pass
-    
+        # 그리드 레이아웃으로 화면을 구성합니다. 
+        grid = QGridLayout()
+        self.setLayout(grid)
+
+        # 첫 화면에 두기 위한 버튼을 생성합니다. 
+        btn1 = QPushButton('Create New', self)
+        btn1.setFont(QFont('맑은 고딕',20))
+        btn1.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
+        btn1.setMaximumHeight(100)
+        btn1.setCheckable(False)
+        btn1.toggle()
+        btn1.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(btn1, 0,0)
+        grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
+
+        vbox = QWidget(self)
+        self.setCentralWidget(vbox)
+        vbox.setLayout(grid)
+
+        self.resize(600, 800)
+        self.show()    
+        
+    def cancel_clicked(self):
+        self.initUI()
+        
     def onActivated(self, text):
         self.lbl.setText(text)
         self.lbl.adjustSize()
