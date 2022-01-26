@@ -163,6 +163,7 @@ class MyApp(QMainWindow, QWidget):
         
         # 시간 / 분 선택하기
         cb = QComboBox(self)
+        cb.setFont(QFont('맑은 고딕',15))
         cb.addItem('1')
         cb.addItem('2')
         cb.addItem('3')
@@ -181,6 +182,7 @@ class MyApp(QMainWindow, QWidget):
 
          # 분 선택하기
         cb = QComboBox(self)
+        cb.setFont(QFont('맑은 고딕',15))
         cb.addItem('0')
         cb.addItem('1')
         cb.addItem('2')
@@ -247,15 +249,23 @@ class MyApp(QMainWindow, QWidget):
         
                
         # 교과목 설정하기
-        grid.addWidget(QLabel('Subject Name :'), 4, 0)
-        grid.addWidget(QLabel('Zoom PMI :'), 5, 0)
-        grid.addWidget(QLabel('Zoom Password :'), 6, 0)
-
+        subjectName = QLabel('Subject Name :')
+        subjectName.setFont(QFont('맑은 고딕',20))
+        grid.addWidget(subjectName, 4, 0)
+        zoomID = QLabel('Zoom PMI :')
+        zoomID.setFont(QFont('맑은 고딕',20))
+        grid.addWidget(zoomID, 5, 0)
+        zoomPW = QLabel('Zoom Password :')
+        zoomPW.setFont(QFont('맑은 고딕',20))
+        grid.addWidget(zoomPW, 6, 0)
+        
         grid.addWidget(QLineEdit(), 4, 1)
         grid.addWidget(QLineEdit(), 5, 1)
         grid.addWidget(QLineEdit(), 6, 1)
 
-        grid.addWidget(QLabel('Sound :'), 7, 0)
+        sound = QLabel('Sound :')
+        sound.setFont(QFont('맑은 고딕',20))
+        grid.addWidget(sound, 7, 0)
         
         sound_on = QPushButton('On', self)
         sound_on.setFont(QFont('맑은 고딕',20))
