@@ -18,7 +18,7 @@ class MyApp(QMainWindow, QWidget):
     def initUI(self):
         # 화면의 아이콘과 이미지를 설정해주는 코드입니다. 
         self.setWindowTitle('Icon')
-        self.setWindowIcon(QIcon('web.png'))
+        self.setWindowIcon(QIcon('./images/web.png'))
         self.setWindowTitle('ZOOM 알림 프로그램')   
         # 화면의 배경색상을 흰색으로 설정해줍니다. 
         pal = QPalette()  
@@ -63,8 +63,8 @@ class MyApp(QMainWindow, QWidget):
 
         # 월요일 버튼
         monday = QPushButton('Mon', self)
-        monday.setFont(QFont('Times',20))
-        monday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        monday.setFont(QFont('맑은 고딕',20))
+        monday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         monday.setMaximumHeight(30)
         monday.setCheckable(True)
         monday.toggle()
@@ -74,8 +74,8 @@ class MyApp(QMainWindow, QWidget):
 
         # 화요일 버튼
         tuesday = QPushButton('Tue', self)
-        tuesday.setFont(QFont('Times',20))
-        tuesday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        tuesday.setFont(QFont('맑은 고딕',20))
+        tuesday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         tuesday.setMaximumHeight(30)
         tuesday.setCheckable(False)
         tuesday.toggle()
@@ -85,8 +85,8 @@ class MyApp(QMainWindow, QWidget):
         
         # 수요일 버튼
         wednesday = QPushButton('Wed', self)
-        wednesday.setFont(QFont('Times',20))
-        wednesday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        wednesday.setFont(QFont('맑은 고딕',20))
+        wednesday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         wednesday.setMaximumHeight(30)
         wednesday.setCheckable(False)
         wednesday.toggle()
@@ -96,8 +96,8 @@ class MyApp(QMainWindow, QWidget):
         
         # 목요일 버튼
         thursday = QPushButton('Thu', self)
-        thursday.setFont(QFont('Times',20))
-        thursday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        thursday.setFont(QFont('맑은 고딕',20))
+        thursday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         thursday.setMaximumHeight(30)
         thursday.setCheckable(False)
         thursday.toggle()
@@ -107,8 +107,8 @@ class MyApp(QMainWindow, QWidget):
 
         # 금요일 버튼
         friday = QPushButton('Fri', self)
-        friday.setFont(QFont('Times',20))
-        friday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        friday.setFont(QFont('맑은 고딕',20))
+        friday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         friday.setMaximumHeight(30)
         friday.setCheckable(False)
         friday.toggle()
@@ -118,8 +118,8 @@ class MyApp(QMainWindow, QWidget):
 
         # 토요일 버튼
         saturday = QPushButton('Sat', self)
-        saturday.setFont(QFont('Times',20))
-        saturday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        saturday.setFont(QFont('맑은 고딕',20))
+        saturday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         saturday.setMaximumHeight(30)
         saturday.setCheckable(False)
         saturday.toggle()
@@ -129,8 +129,8 @@ class MyApp(QMainWindow, QWidget):
         
         # 일요일 버튼
         sunday = QPushButton('Sun', self)
-        sunday.setFont(QFont('Times',20))
-        sunday.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        sunday.setFont(QFont('맑은 고딕',20))
+        sunday.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         sunday.setMaximumHeight(30)
         sunday.setCheckable(False)
         sunday.toggle()
@@ -140,8 +140,8 @@ class MyApp(QMainWindow, QWidget):
         
         # AM 버튼
         am = QPushButton('AM', self)
-        am.setFont(QFont('Times',20))
-        am.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        am.setFont(QFont('맑은 고딕',20))
+        am.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         am.setMaximumHeight(30)
         am.setCheckable(False)
         am.toggle()
@@ -151,8 +151,8 @@ class MyApp(QMainWindow, QWidget):
         
         # PM 버튼
         pm = QPushButton('PM', self)
-        pm.setFont(QFont('Times',20))
-        pm.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        pm.setFont(QFont('맑은 고딕',20))
+        pm.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         pm.setMaximumHeight(30)
         pm.setCheckable(False)
         pm.toggle()
@@ -258,8 +258,8 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(QLabel('Sound :'), 7, 0)
         
         sound_on = QPushButton('On', self)
-        sound_on.setFont(QFont('Times',20))
-        sound_on.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        sound_on.setFont(QFont('맑은 고딕',20))
+        sound_on.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         sound_on.setMaximumHeight(30)
         sound_on.setCheckable(False)
         sound_on.toggle()
@@ -268,8 +268,8 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(sound_on, 7,1)
 
         sound_off = QPushButton('Off', self)
-        sound_off.setFont(QFont('Times',20))
-        sound_off.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        sound_off.setFont(QFont('맑은 고딕',20))
+        sound_off.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         sound_off.setMaximumHeight(30)
         sound_off.setCheckable(False)
         sound_off.toggle()
@@ -278,8 +278,8 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(sound_off, 7,2)
 
         OK = QPushButton('OK', self)
-        OK.setFont(QFont('Times',20))
-        OK.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        OK.setFont(QFont('맑은 고딕',20))
+        OK.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         OK.setMaximumHeight(30)
         OK.setCheckable(False)
         OK.toggle()
@@ -288,8 +288,8 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(OK, 8,0)
         
         cancel = QPushButton('Cancel', self)
-        cancel.setFont(QFont('Times',20))
-        cancel.setStyleSheet('QPushButton {background-color: deepskyblue;color:white;}')
+        cancel.setFont(QFont('맑은 고딕',20))
+        cancel.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
         cancel.setMaximumHeight(30)
         cancel.setCheckable(False)
         cancel.toggle()
@@ -319,7 +319,15 @@ class MyApp(QMainWindow, QWidget):
         btn1.clicked.connect(self.btn1_clicked)
 
         grid.addWidget(btn1, 0,0)
+        
+        self.dbTable = QTableWidget(self)
+        self.dbTable.resize(290,290)
+        self.dbTable.setRowCount(2)
+        self.dbTable.setColumnCount(2)
+        self.setTableWidgetData()
+        
         grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
+        grid.addWidget(self.dbTable, 2,0)
 
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
@@ -327,6 +335,12 @@ class MyApp(QMainWindow, QWidget):
 
         self.resize(600, 800)
         self.show()    
+    
+    def setTableWidgetData(self):
+        self.dbTable.setItem(0,0,QTableWidgetItem("(0,0)"))
+        self.dbTable.setItem(0,1,QTableWidgetItem("(0,0)"))
+        self.dbTable.setItem(1,0,QTableWidgetItem("(0,0)"))
+        self.dbTable.setItem(1,1,QTableWidgetItem("(0,0)"))
         
     def cancel_clicked(self):
         self.initUI()
