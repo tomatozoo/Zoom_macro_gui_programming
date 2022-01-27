@@ -369,6 +369,8 @@ class MyApp(QMainWindow, QWidget):
         
         cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", (day_data, total_time_data, subject_data, id_data, pw_data, sound_data) )
         cursor.fetchall()
+        print("select all \n\n\n\n\n")
+        cursor.execute("SELECT * FROM alarm")
         con.commit()
         
         # 그리드 레이아웃으로 화면을 구성합니다. 
@@ -387,12 +389,12 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(btn1, 0,0)
         
         self.dbTable = QTableWidget(self)
-        self.dbTable.resize(290,290)
-        self.dbTable.setRowCount(2)
-        self.dbTable.setColumnCount(2)
+        self.dbTable.setRowCount(4)
+        self.dbTable.setColumnCount(6)
+        self.dbTable.setHorizontalHeaderLabels(["요일", "알람 시간", "과목 이름", "줌 회의 아이디", "줌 회의 비밀번호", "알람 소리 여부"])
         self.setTableWidgetData()
         
-        grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
+        #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
         grid.addWidget(self.dbTable, 2,0)
 
         vbox = QWidget(self)
@@ -403,17 +405,29 @@ class MyApp(QMainWindow, QWidget):
         self.show()    
     
     def setTableWidgetData(self):
-        self.dbTable.setItem(0,0,QTableWidgetItem("(0,0)"))
-        self.dbTable.setItem(0,1,QTableWidgetItem("(0,0)"))
-        self.dbTable.setItem(1,0,QTableWidgetItem("(0,0)"))
-        self.dbTable.setItem(1,1,QTableWidgetItem("(0,0)"))
+        cursor.execute("SELECT * FROM alarm")
         
+        
+        output = cursor.fetchone()
+        print(output)
+        self.dbTable.setFont(QFont('맑은 고딕',10))
+        self.dbTable.setItem(0,0,QTableWidgetItem(output[0]))
+        
+        self.dbTable.setItem(0,1,QTableWidgetItem(output[1]))
+        self.dbTable.setItem(0,2,QTableWidgetItem(output[2]))
+        self.dbTable.setItem(0,3,QTableWidgetItem(str(output[3])))
+        self.dbTable.setItem(0,4,QTableWidgetItem(str(output[4])))
+        self.dbTable.setItem(0,5,QTableWidgetItem(str(output[5])))
+       
     def cancel_clicked(self):
         self.initUI()
         
     def onActivated(self, text):
         self.lbl.setText(text)
         self.lbl.adjustSize()
+
+cursor.fetchall()
+con.commit()
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
