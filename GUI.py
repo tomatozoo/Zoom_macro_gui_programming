@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QCoreApplication, QDate, Qt
 from PyQt5 import QtSql
+import time
 
 class DB():
     def __init__(self):
