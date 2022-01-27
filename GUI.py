@@ -470,6 +470,10 @@ class MyApp(QMainWindow, QWidget):
         self.lbl.setText(text)
         self.lbl.adjustSize()
 
+    def check_alarm(self):
+        for row in self.db.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+            pass
+
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
    app = QApplication(sys.argv)
