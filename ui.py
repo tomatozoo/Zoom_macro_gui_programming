@@ -5,9 +5,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import QCoreApplication, QDate, Qt
 from PyQt5 import QtSql
 
-class DB():
-    pass
-
 # 메인 클래스를 계획합니다. 
 class MyApp(QMainWindow, QWidget):
     # UI 화면을 초기화해줍니다. 
@@ -45,20 +42,9 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(btn1, 0,0)
         grid.addWidget(QLabel(), 1,0)
 
-        self.dbTable = QTableWidget(self)
-        self.dbTable.setRowCount(4)
-        self.dbTable.setColumnCount(6)
-        self.dbTable.setHorizontalHeaderLabels(["요일", "알람 시간", "과목 이름", "줌 회의 아이디", "줌 회의 비밀번호", "알람 소리 여부"])
-        self.setTableWidgetData()
-        
-        #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
-        grid.addWidget(self.dbTable, 2,0)
-
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
         vbox.setLayout(grid)
-
-
 
         self.resize(600, 800)
         self.show()
@@ -83,6 +69,7 @@ class MyApp(QMainWindow, QWidget):
             i.toggle()
             self.clicked_days.remove(i)
         self.clicked_days.append(someday)
+        
     def connect_times(self, someday):
         for i in self.clicked_times:
             if i == someday:
@@ -91,6 +78,7 @@ class MyApp(QMainWindow, QWidget):
             i.toggle()
             self.clicked_times.remove(i)
         self.clicked_times.append(someday)
+        
     def connect_sounds(self, someday):
         for i in self.clicked_sounds:
             if i == someday:
@@ -98,7 +86,8 @@ class MyApp(QMainWindow, QWidget):
                 return
             i.toggle()
             self.clicked_sounds.remove(i)
-        self.clicked_sounds.append(someday)       
+        self.clicked_sounds.append(someday)  
+             
     def btn1_clicked(self):
         # 그리드 레이아웃으로 화면을 구성합니다. 
         grid = QGridLayout()
@@ -293,7 +282,7 @@ class MyApp(QMainWindow, QWidget):
         self.zoomID_input.setFont(QFont('맑은 고딕',20))        
         self.zoomPW_input = QLineEdit()
         self.zoomPW_input.setFont(QFont('맑은 고딕',20))
-        self.subjectName_input.setMaxLength(8)
+        self.subjectName_input.setMaxLength(10)
         self.zoomID_input.setMaxLength(15)
         self.zoomPW_input.setMaxLength(15)
                 
@@ -371,23 +360,63 @@ class MyApp(QMainWindow, QWidget):
         subject_data = self.subjectName_input.text() 
         id_data = int(self.zoomID_input.text())
         pw_data = int(self.zoomPW_input.text())
+
+        print(day_data, total_time_data, subject_data, id_data, pw_data, sound_data)
         
+        cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", (day_data, total_time_data, subject_data, id_data, pw_data, sound_data) )
+        cursor.fetchall()
+        print("select all \n\n\n\n\n")
+        cursor.execute("SELECT * FROM alarm")
+        con.commit()
         
-        self.initUI()
-        self.initSETTING()
+        # 그리드 레이아웃으로 화면을 구성합니다. 
+        grid = QGridLayout()
+        self.setLayout(grid)
+
+        # 첫 화면에 두기 위한 버튼을 생성합니다. 
+        btn1 = QPushButton('Create New', self)
+        btn1.setFont(QFont('맑은 고딕',20))
+        btn1.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
+        btn1.setMaximumHeight(100)
+        btn1.setCheckable(False)
+        btn1.toggle()
+        btn1.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(btn1, 0,0)
         
+        self.dbTable = QTableWidget(self)
+        self.dbTable.setRowCount(4)
+        self.dbTable.setColumnCount(6)
+        self.dbTable.setHorizontalHeaderLabels(["요일", "알람 시간", "과목 이름", "줌 회의 아이디", "줌 회의 비밀번호", "알람 소리 여부"])
+        self.setTableWidgetData()
+        
+        #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
+        grid.addWidget(self.dbTable, 2,0)
+
+        vbox = QWidget(self)
+        self.setCentralWidget(vbox)
+        vbox.setLayout(grid)
+
+        self.resize(600, 800)
+        self.show()    
+    
     def setTableWidgetData(self):
+        cursor.execute("SELECT * FROM alarm")
+        
+        
+        output = cursor.fetchone()
+        print(output)
         self.dbTable.setFont(QFont('맑은 고딕',10))
-        self.dbTable.setItem(0,0,QTableWidgetItem('Mon'))
-        self.dbTable.setItem(0,1,QTableWidgetItem('10:35'))
-        self.dbTable.setItem(0,2,QTableWidgetItem('교육학개론'))
-        self.dbTable.setItem(0,3,QTableWidgetItem('1223041'))
-        self.dbTable.setItem(0,4,QTableWidgetItem('0920'))
-        self.dbTable.setItem(0,5,QTableWidgetItem('0'))
+        self.dbTable.setItem(0,0,QTableWidgetItem(output[0]))
+        
+        self.dbTable.setItem(0,1,QTableWidgetItem(output[1]))
+        self.dbTable.setItem(0,2,QTableWidgetItem(output[2]))
+        self.dbTable.setItem(0,3,QTableWidgetItem(str(output[3])))
+        self.dbTable.setItem(0,4,QTableWidgetItem(str(output[4])))
+        self.dbTable.setItem(0,5,QTableWidgetItem(str(output[5])))
        
     def cancel_clicked(self):
         self.initUI()
-        self.initSETTING()
         
     def onActivated(self, text):
         self.lbl.setText(text)

@@ -1,29 +1,51 @@
 # 모듈을 불러옵니다. 
+import sqlite3
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QCoreApplication, QDate, Qt
 from PyQt5 import QtSql
-import sqlite3
 
-con = sqlite3.connect('simpledb.db')
-cursor = con.cursor()
-print(type(con))
-
-try:
-    cursor.execute('''CREATE table "alarm" ("DAY" TEXT, "HOURMIN" TEXT, "SUBJECT" TEXT, "ZOOMID" INTEGER, "ZOOMPW" INTEGER, "SOUND" INTEGER)''')
-except:
-    print('hi')
-
-
+class DB():
+    def __init__(self):
+        # DB를 생성한다. 
+        self.con = sqlite3.connect('simpledb.sqlite')
+        # 데이터 삽입
+        # connection 객체인 con을 이용해서 cursor 객체를 생성함
+        self.cursor = self.con.cursor()
+        try:
+            # 새로 테이블을 만들어야 하는 경우
+            self.cursor.execute("CREATE table alarm (DAY VARCHAR2(200 BYTE), HOURMIN VARCHAR2(200 BYTE), SUBJECT VARCHAR2(200 BYTE), ZOOMID NUMBER(10,2), ZOOMPW NUMBER(10,2), SOUND NUMBER(10,2))")
+        except:
+            # 그러지 않아도 되는 경우
+            pass   
+        self.line = 0     
+    def create(self, row_list):
+        self.cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", row_list)
+    def read(self):
+        print('hi')
+        for row in self.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+            print(row)
+    def update(self):
+        self.line = 0
+        for row in self.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+            self.line += 1
+    def delete(self):
+        pass
+    
 # 메인 클래스를 계획합니다. 
 class MyApp(QMainWindow, QWidget):
     # UI 화면을 초기화해줍니다. 
     def __init__(self):
         super().__init__()
         self.date = QDate.currentDate() # 오늘 날짜를 받아옵니다. 
+        self.db = DB()
         self.initUI()
+        self.db.read()
+        self.db.update()
         self.initSETTING()
+        
+        
 
     # UI에 포함될 구성요소의 기본적인 설정을 수행해줍니다. 
     def initUI(self):
@@ -35,7 +57,7 @@ class MyApp(QMainWindow, QWidget):
         pal = QPalette()  
         pal.setColor(QPalette.Background,QColor(255,255,255))
         self.setAutoFillBackground(True)
-        self.setPalette(pal)   
+        self.setPalette(pal)  
         
         # 그리드 레이아웃으로 화면을 구성합니다. 
         grid = QGridLayout()
@@ -51,11 +73,32 @@ class MyApp(QMainWindow, QWidget):
         btn1.clicked.connect(self.btn1_clicked)
 
         grid.addWidget(btn1, 0,0)
-        grid.addWidget(QLabel(), 1,0)
+        
+        dele = QPushButton('Delete rows', self)
+        dele.setFont(QFont('맑은 고딕',20))
+        dele.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
+        dele.setMaximumHeight(100)
+        dele.setCheckable(False)
+        dele.toggle()
+        #dele.clicked.connect(self.btn1_clicked)
+
+        grid.addWidget(dele, 1,0)
+
+        self.dbTable = QTableWidget(self)
+        self.db.update()
+        self.dbTable.setRowCount(self.db.line)
+        self.dbTable.setColumnCount(6)
+        self.dbTable.setHorizontalHeaderLabels(["요일", "알람 시간", "과목 이름", "줌 회의 아이디", "줌 회의 비밀번호", "알람 소리 여부"])
+        self.setTableWidgetData()
+        
+        #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
+        grid.addWidget(self.dbTable, 2,0)
 
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
         vbox.setLayout(grid)
+
+
 
         self.resize(600, 800)
         self.show()
@@ -284,11 +327,15 @@ class MyApp(QMainWindow, QWidget):
         grid.addWidget(zoomPW, 6, 0)
         
         self.subjectName_input = QLineEdit()
+        self.subjectName_input.setFixedWidth(300)
         self.subjectName_input.setFont(QFont('맑은 고딕',20))
         self.zoomID_input = QLineEdit()
         self.zoomID_input.setFont(QFont('맑은 고딕',20))        
         self.zoomPW_input = QLineEdit()
         self.zoomPW_input.setFont(QFont('맑은 고딕',20))
+        self.subjectName_input.setMaxLength(8)
+        self.zoomID_input.setMaxLength(15)
+        self.zoomPW_input.setMaxLength(15)
                 
         grid.addWidget(self.subjectName_input, 4, 1)
         grid.addWidget(self.zoomID_input, 5, 1)
@@ -364,70 +411,32 @@ class MyApp(QMainWindow, QWidget):
         subject_data = self.subjectName_input.text() 
         id_data = int(self.zoomID_input.text())
         pw_data = int(self.zoomPW_input.text())
-
-        print(day_data, total_time_data, subject_data, id_data, pw_data, sound_data)
         
-        cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", (day_data, total_time_data, subject_data, id_data, pw_data, sound_data) )
-        cursor.fetchall()
-        print("select all \n\n\n\n\n")
-        cursor.execute("SELECT * FROM alarm")
-        con.commit()
+        new_row = [day_data, total_time_data, subject_data, id_data, pw_data, sound_data]
+        self.db.create(new_row)
         
-        # 그리드 레이아웃으로 화면을 구성합니다. 
-        grid = QGridLayout()
-        self.setLayout(grid)
-
-        # 첫 화면에 두기 위한 버튼을 생성합니다. 
-        btn1 = QPushButton('Create New', self)
-        btn1.setFont(QFont('맑은 고딕',20))
-        btn1.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
-        btn1.setMaximumHeight(100)
-        btn1.setCheckable(False)
-        btn1.toggle()
-        btn1.clicked.connect(self.btn1_clicked)
-
-        grid.addWidget(btn1, 0,0)
+        self.initUI()
+        self.initSETTING()
         
-        self.dbTable = QTableWidget(self)
-        self.dbTable.setRowCount(4)
-        self.dbTable.setColumnCount(6)
-        self.dbTable.setHorizontalHeaderLabels(["요일", "알람 시간", "과목 이름", "줌 회의 아이디", "줌 회의 비밀번호", "알람 소리 여부"])
-        self.setTableWidgetData()
-        
-        #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
-        grid.addWidget(self.dbTable, 2,0)
-
-        vbox = QWidget(self)
-        self.setCentralWidget(vbox)
-        vbox.setLayout(grid)
-
-        self.resize(600, 800)
-        self.show()    
-    
     def setTableWidgetData(self):
-        cursor.execute("SELECT * FROM alarm")
-        
-        
-        output = cursor.fetchone()
-        print(output)
         self.dbTable.setFont(QFont('맑은 고딕',10))
-        self.dbTable.setItem(0,0,QTableWidgetItem(output[0]))
-        
-        self.dbTable.setItem(0,1,QTableWidgetItem(output[1]))
-        self.dbTable.setItem(0,2,QTableWidgetItem(output[2]))
-        self.dbTable.setItem(0,3,QTableWidgetItem(str(output[3])))
-        self.dbTable.setItem(0,4,QTableWidgetItem(str(output[4])))
-        self.dbTable.setItem(0,5,QTableWidgetItem(str(output[5])))
-       
+        i = 0
+        for row in self.db.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+            self.dbTable.setItem(i,0,QTableWidgetItem(f'{row[0]}'))
+            self.dbTable.setItem(i,1,QTableWidgetItem(f'{row[1]}'))
+            self.dbTable.setItem(i,2,QTableWidgetItem(f'{row[2]}'))
+            self.dbTable.setItem(i,3,QTableWidgetItem(f'{row[3]}'))
+            self.dbTable.setItem(i,4,QTableWidgetItem(f'{row[4]}'))
+            self.dbTable.setItem(i,5,QTableWidgetItem(f'{row[5]}'))
+            i += 1
+    
     def cancel_clicked(self):
         self.initUI()
+        self.initSETTING()
         
     def onActivated(self, text):
         self.lbl.setText(text)
         self.lbl.adjustSize()
-
-cursor.fetchall()
-con.commit()
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
