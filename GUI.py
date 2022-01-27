@@ -22,17 +22,22 @@ class DB():
         self.line = 0     
     def create(self, row_list):
         self.cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", row_list)
+        self.con.commit()
     def read(self):
         print('hi')
         for row in self.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
             print(row)
+        self.con.commit()
+
     def update(self):
         self.line = 0
         for row in self.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
             self.line += 1
+        self.con.commit()
+
     def delete(self):
-        pass
-    
+        self.con.commit()
+  
 # 메인 클래스를 계획합니다. 
 class MyApp(QMainWindow, QWidget):
     # UI 화면을 초기화해줍니다. 
@@ -45,8 +50,6 @@ class MyApp(QMainWindow, QWidget):
         self.db.update()
         self.initSETTING()
         
-        
-
     # UI에 포함될 구성요소의 기본적인 설정을 수행해줍니다. 
     def initUI(self):
         # 화면의 아이콘과 이미지를 설정해주는 코드입니다. 
@@ -141,9 +144,12 @@ class MyApp(QMainWindow, QWidget):
         self.clicked_sounds.append(someday)       
     def btn1_clicked(self):
         # 그리드 레이아웃으로 화면을 구성합니다. 
+        # 메인 그리드 레이아웃
         grid = QGridLayout()
         self.setLayout(grid)
 
+        sub_grid1 = QGridLayout()
+        #grid.addLayout(sub_grid1, 0,0)
         # 월요일 버튼
         self.monday = QPushButton('Mon', self)
         self.monday.setFont(QFont('맑은 고딕',20))
@@ -151,7 +157,7 @@ class MyApp(QMainWindow, QWidget):
         self.monday.setMaximumHeight(30)
         self.monday.setCheckable(True)
         self.monday.clicked.connect(lambda : self.connect_days(self.monday))
-        grid.addWidget(self.monday, 0,0)
+        sub_grid1.addWidget(self.monday, 0,0)
 
         # 화요일 버튼
         self.tuesday = QPushButton('Tue', self)
@@ -160,7 +166,7 @@ class MyApp(QMainWindow, QWidget):
         self.tuesday.setMaximumHeight(30)
         self.tuesday.setCheckable(True)
         self.tuesday.clicked.connect(lambda : self.connect_days(self.tuesday))
-        grid.addWidget(self.tuesday, 0,1)
+        sub_grid1.addWidget(self.tuesday, 0,1)
         
         # 수요일 버튼
         self.wednesday = QPushButton('Wed', self)
@@ -169,7 +175,7 @@ class MyApp(QMainWindow, QWidget):
         self.wednesday.setMaximumHeight(30)
         self.wednesday.setCheckable(True)
         self.wednesday.clicked.connect(lambda : self.connect_days(self.wednesday))
-        grid.addWidget(self.wednesday, 0,2)
+        sub_grid1.addWidget(self.wednesday, 0,2)
         
         # 목요일 버튼
         self.thursday = QPushButton('Thu', self)
@@ -178,7 +184,7 @@ class MyApp(QMainWindow, QWidget):
         self.thursday.setMaximumHeight(30)
         self.thursday.setCheckable(True)
         self.thursday.clicked.connect(lambda : self.connect_days(self.thursday))
-        grid.addWidget(self.thursday, 0,3)
+        sub_grid1.addWidget(self.thursday, 0,3)
 
         # 금요일 버튼
         self.friday = QPushButton('Fri', self)
@@ -187,7 +193,7 @@ class MyApp(QMainWindow, QWidget):
         self.friday.setMaximumHeight(30)
         self.friday.setCheckable(True)
         self.friday.clicked.connect(lambda : self.connect_days(self.friday))
-        grid.addWidget(self.friday, 0,4)
+        sub_grid1.addWidget(self.friday, 0,4)
 
         # 토요일 버튼
         self.saturday = QPushButton('Sat', self)
@@ -196,7 +202,7 @@ class MyApp(QMainWindow, QWidget):
         self.saturday.setMaximumHeight(30)
         self.saturday.setCheckable(True)
         self.saturday.clicked.connect(lambda : self.connect_days(self.saturday))
-        grid.addWidget(self.saturday, 0,5)
+        sub_grid1.addWidget(self.saturday, 0,5)
         
         # 일요일 버튼
         self.sunday = QPushButton('Sun', self)
@@ -205,8 +211,12 @@ class MyApp(QMainWindow, QWidget):
         self.sunday.setMaximumHeight(30)
         self.sunday.setCheckable(True)
         self.sunday.clicked.connect(lambda : self.connect_days(self.sunday))
-        grid.addWidget(self.sunday, 0,6)
+        sub_grid1.addWidget(self.sunday, 0,6)
         
+        
+        grid.addLayout(sub_grid1, 0,0)
+        
+        sub_grid2 = QGridLayout()
         # AM 버튼
         self.am = QPushButton('AM', self)
         self.am.setFont(QFont('맑은 고딕',20))
@@ -215,7 +225,7 @@ class MyApp(QMainWindow, QWidget):
         self.am.setCheckable(True)
         self.am.clicked.connect(lambda : self.connect_times(self.am))
 
-        grid.addWidget(self.am, 1,0)
+        sub_grid2.addWidget(self.am, 0,0)
         
         # PM 버튼
         self.pm = QPushButton('PM', self)
@@ -225,10 +235,13 @@ class MyApp(QMainWindow, QWidget):
         self.pm.setCheckable(True)
         self.pm.clicked.connect(lambda : self.connect_times(self.pm))
 
-        grid.addWidget(self.pm, 3,0)      
+        sub_grid2.addWidget(self.pm, 0,1)      
                 
         
         # 시간 / 분 선택하기
+        hour_label = QLabel('시간 : ')
+        hour_label.setFont(QFont('맑은 고딕',20))
+        
         self.hour = QComboBox(self)
         self.hour.setFont(QFont('맑은 고딕',15))
         self.hour.addItem('1')
@@ -245,7 +258,7 @@ class MyApp(QMainWindow, QWidget):
         self.hour.addItem('12')
         self.hour.move(50, 50)
 
-        grid.addWidget(self.hour, 2,1)            
+        sub_grid2.addWidget(self.hour, 1,0)            
 
          # 분 선택하기
         self.min = QComboBox(self)
@@ -312,38 +325,51 @@ class MyApp(QMainWindow, QWidget):
         self.min.addItem('59')
         self.min.move(50, 50)
 
-        grid.addWidget(self.min, 2,2)    
+        sub_grid2.addWidget(self.min, 1,1)
         
+        min_label = QLabel('분 : ')
+        min_label.setFont(QFont('맑은 고딕',20))
+                    
+
+        
+        grid.addLayout(sub_grid2, 1,0)
+        
+        sub_grid3 = QGridLayout()        
                
         # 교과목 설정하기
         subjectName = QLabel('Subject Name :')
         subjectName.setFont(QFont('맑은 고딕',20))
-        grid.addWidget(subjectName, 4, 0)
+        sub_grid3.addWidget(subjectName, 0, 0)
         zoomID = QLabel('Zoom PMI :')
         zoomID.setFont(QFont('맑은 고딕',20))
-        grid.addWidget(zoomID, 5, 0)
+        sub_grid3.addWidget(zoomID, 1, 0)
         zoomPW = QLabel('Zoom Password :')
         zoomPW.setFont(QFont('맑은 고딕',20))
-        grid.addWidget(zoomPW, 6, 0)
+        sub_grid3.addWidget(zoomPW, 2, 0)
         
         self.subjectName_input = QLineEdit()
-        self.subjectName_input.setFixedWidth(300)
         self.subjectName_input.setFont(QFont('맑은 고딕',20))
         self.zoomID_input = QLineEdit()
         self.zoomID_input.setFont(QFont('맑은 고딕',20))        
         self.zoomPW_input = QLineEdit()
         self.zoomPW_input.setFont(QFont('맑은 고딕',20))
-        self.subjectName_input.setMaxLength(8)
+        self.subjectName_input.setMaxLength(15)
         self.zoomID_input.setMaxLength(15)
         self.zoomPW_input.setMaxLength(15)
                 
-        grid.addWidget(self.subjectName_input, 4, 1)
-        grid.addWidget(self.zoomID_input, 5, 1)
-        grid.addWidget(self.zoomPW_input, 6, 1)
+        sub_grid3.addWidget(self.subjectName_input, 0, 1)
+        sub_grid3.addWidget(self.zoomID_input, 1, 1)
+        sub_grid3.addWidget(self.zoomPW_input, 2, 1)
 
+
+        grid.addLayout(sub_grid3, 2,0)
+
+        sub_grid4 = QGridLayout()        
+        
         sound = QLabel('Sound :')
         sound.setFont(QFont('맑은 고딕',20))
-        grid.addWidget(sound, 7, 0)
+        sub_grid4.addWidget(sound, 0, 0)
+        
         
         self.sound_on = QPushButton('On', self)
         self.sound_on.setFont(QFont('맑은 고딕',20))
@@ -352,7 +378,7 @@ class MyApp(QMainWindow, QWidget):
         self.sound_on.setCheckable(True)
         self.sound_on.clicked.connect(lambda : self.connect_sounds(self.sound_on))
 
-        grid.addWidget(self.sound_on, 7,1)
+        sub_grid4.addWidget(self.sound_on, 0,1)
 
         self.sound_off = QPushButton('Off', self)
         self.sound_off.setFont(QFont('맑은 고딕',20))
@@ -361,8 +387,12 @@ class MyApp(QMainWindow, QWidget):
         self.sound_off.setCheckable(True)
         self.sound_off.clicked.connect(lambda : self.connect_sounds(self.sound_off))
 
-        grid.addWidget(self.sound_off, 7,2)
+        sub_grid4.addWidget(self.sound_off, 0,2)
+        
+        grid.addLayout(sub_grid4, 3,0)
 
+        sub_grid5 = QGridLayout()
+    
         OK = QPushButton('OK', self)
         OK.setFont(QFont('맑은 고딕',20))
         OK.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
@@ -371,7 +401,7 @@ class MyApp(QMainWindow, QWidget):
         OK.toggle()
         OK.clicked.connect(self.OK_clicked)
 
-        grid.addWidget(OK, 8,0)
+        sub_grid5.addWidget(OK, 0,0)
         
         cancel = QPushButton('Cancel', self)
         cancel.setFont(QFont('맑은 고딕',20))
@@ -381,7 +411,8 @@ class MyApp(QMainWindow, QWidget):
         cancel.toggle()
         cancel.clicked.connect(self.cancel_clicked)
 
-        grid.addWidget(cancel, 8,1)
+        sub_grid5.addWidget(cancel, 0,1)
+        grid.addLayout(sub_grid5, 4, 0)
                         
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
