@@ -4,6 +4,17 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QCoreApplication, QDate, Qt
 from PyQt5 import QtSql
+import sqlite3
+
+con = sqlite3.connect('simpledb.db')
+cursor = con.cursor()
+print(type(con))
+
+try:
+    cursor.execute('''CREATE table "alarm" ("DAY" TEXT, "HOURMIN" TEXT, "SUBJECT" TEXT, "ZOOMID" INTEGER, "ZOOMPW" INTEGER, "SOUND" INTEGER)''')
+except:
+    print('hi')
+
 
 # 메인 클래스를 계획합니다. 
 class MyApp(QMainWindow, QWidget):
@@ -175,90 +186,90 @@ class MyApp(QMainWindow, QWidget):
                 
         
         # 시간 / 분 선택하기
-        cb = QComboBox(self)
-        cb.setFont(QFont('맑은 고딕',15))
-        cb.addItem('1')
-        cb.addItem('2')
-        cb.addItem('3')
-        cb.addItem('4')
-        cb.addItem('5')
-        cb.addItem('6')
-        cb.addItem('7')
-        cb.addItem('8')
-        cb.addItem('9')
-        cb.addItem('10')
-        cb.addItem('11')
-        cb.addItem('12')
-        cb.move(50, 50)
+        self.hour = QComboBox(self)
+        self.hour.setFont(QFont('맑은 고딕',15))
+        self.hour.addItem('1')
+        self.hour.addItem('2')
+        self.hour.addItem('3')
+        self.hour.addItem('4')
+        self.hour.addItem('5')
+        self.hour.addItem('6')
+        self.hour.addItem('7')
+        self.hour.addItem('8')
+        self.hour.addItem('9')
+        self.hour.addItem('10')
+        self.hour.addItem('11')
+        self.hour.addItem('12')
+        self.hour.move(50, 50)
 
-        grid.addWidget(cb, 2,1)            
+        grid.addWidget(self.hour, 2,1)            
 
          # 분 선택하기
-        cb = QComboBox(self)
-        cb.setFont(QFont('맑은 고딕',15))
-        cb.addItem('0')
-        cb.addItem('1')
-        cb.addItem('2')
-        cb.addItem('3')
-        cb.addItem('4')
-        cb.addItem('5')
-        cb.addItem('6')
-        cb.addItem('7')
-        cb.addItem('8')
-        cb.addItem('9')
-        cb.addItem('10')
-        cb.addItem('11')
-        cb.addItem('12')
-        cb.addItem('13')
-        cb.addItem('14')
-        cb.addItem('15')
-        cb.addItem('16')
-        cb.addItem('17')
-        cb.addItem('18')
-        cb.addItem('19')
-        cb.addItem('20')
-        cb.addItem('21')
-        cb.addItem('22')
-        cb.addItem('23')
-        cb.addItem('24')
-        cb.addItem('25')
-        cb.addItem('26')
-        cb.addItem('27')
-        cb.addItem('28')
-        cb.addItem('29')
-        cb.addItem('30')
-        cb.addItem('31')
-        cb.addItem('32')
-        cb.addItem('33')
-        cb.addItem('34')
-        cb.addItem('35')
-        cb.addItem('36')
-        cb.addItem('37')
-        cb.addItem('38')
-        cb.addItem('39')
-        cb.addItem('40')
-        cb.addItem('41')
-        cb.addItem('42')
-        cb.addItem('43')
-        cb.addItem('44')
-        cb.addItem('45')
-        cb.addItem('46')
-        cb.addItem('47')
-        cb.addItem('48')
-        cb.addItem('49')
-        cb.addItem('50')
-        cb.addItem('51')
-        cb.addItem('52')
-        cb.addItem('53')
-        cb.addItem('54')
-        cb.addItem('55')
-        cb.addItem('56')
-        cb.addItem('57')
-        cb.addItem('58')
-        cb.addItem('59')
-        cb.move(50, 50)
+        self.min = QComboBox(self)
+        self.min.setFont(QFont('맑은 고딕',15))
+        self.min.addItem('0')
+        self.min.addItem('1')
+        self.min.addItem('2')
+        self.min.addItem('3')
+        self.min.addItem('4')
+        self.min.addItem('5')
+        self.min.addItem('6')
+        self.min.addItem('7')
+        self.min.addItem('8')
+        self.min.addItem('9')
+        self.min.addItem('10')
+        self.min.addItem('11')
+        self.min.addItem('12')
+        self.min.addItem('13')
+        self.min.addItem('14')
+        self.min.addItem('15')
+        self.min.addItem('16')
+        self.min.addItem('17')
+        self.min.addItem('18')
+        self.min.addItem('19')
+        self.min.addItem('20')
+        self.min.addItem('21')
+        self.min.addItem('22')
+        self.min.addItem('23')
+        self.min.addItem('24')
+        self.min.addItem('25')
+        self.min.addItem('26')
+        self.min.addItem('27')
+        self.min.addItem('28')
+        self.min.addItem('29')
+        self.min.addItem('30')
+        self.min.addItem('31')
+        self.min.addItem('32')
+        self.min.addItem('33')
+        self.min.addItem('34')
+        self.min.addItem('35')
+        self.min.addItem('36')
+        self.min.addItem('37')
+        self.min.addItem('38')
+        self.min.addItem('39')
+        self.min.addItem('40')
+        self.min.addItem('41')
+        self.min.addItem('42')
+        self.min.addItem('43')
+        self.min.addItem('44')
+        self.min.addItem('45')
+        self.min.addItem('46')
+        self.min.addItem('47')
+        self.min.addItem('48')
+        self.min.addItem('49')
+        self.min.addItem('50')
+        self.min.addItem('51')
+        self.min.addItem('52')
+        self.min.addItem('53')
+        self.min.addItem('54')
+        self.min.addItem('55')
+        self.min.addItem('56')
+        self.min.addItem('57')
+        self.min.addItem('58')
+        self.min.addItem('59')
+        self.min.move(50, 50)
 
-        grid.addWidget(cb, 2,2)    
+        grid.addWidget(self.min, 2,2)    
         
                
         # 교과목 설정하기
@@ -333,6 +344,33 @@ class MyApp(QMainWindow, QWidget):
         self.show()    
 
     def OK_clicked(self):
+        # 데이터를 수집합니다. 
+        day_data = self.clicked_days[0].text() # 요일
+        
+        time_data = self.clicked_times[0].text() # 오전 오후
+        hour_data = int(self.hour.currentText())
+        min_data = int(self.min.currentText())
+        if time_data == 'AM':
+            total_time_data = str(f'{hour_data}:{min_data}')
+        else:
+            total_time_data = str(f'{hour_data+12}:{min_data}')
+        
+        sound_data = self.clicked_sounds[0].text() # 소리 유무
+        if sound_data == 'On':
+            sound_data = 1 # on은 1
+        else:
+            sound_data = 0 # off는 0
+        
+        subject_data = self.subjectName_input.text() 
+        id_data = int(self.zoomID_input.text())
+        pw_data = int(self.zoomPW_input.text())
+
+        print(day_data, total_time_data, subject_data, id_data, pw_data, sound_data)
+        
+        cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", (day_data, total_time_data, subject_data, id_data, pw_data, sound_data) )
+        cursor.fetchall()
+        con.commit()
+        
         # 그리드 레이아웃으로 화면을 구성합니다. 
         grid = QGridLayout()
         self.setLayout(grid)
