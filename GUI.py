@@ -453,6 +453,19 @@ class MyApp(QMainWindow, QWidget):
         self.initUI()
         self.initSETTING()
         
+    def setTableWidgetData_deletion(self):
+        self.dbTable.setFont(QFont('맑은 고딕',10))
+        i = 0
+        for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
+            cb = QCheckBox()
+            self.dbTable.setItem(i,0,QTableWidgetItem(cb))
+            self.dbTable.setItem(i,1,QTableWidgetItem(f'{row[1]}'))
+            self.dbTable.setItem(i,2,QTableWidgetItem(f'{row[2]}'))
+            self.dbTable.setItem(i,3,QTableWidgetItem(f'{row[3]}'))
+            self.dbTable.setItem(i,4,QTableWidgetItem(f'{row[4]}'))
+            self.dbTable.setItem(i,5,QTableWidgetItem(f'{row[5]}'))
+            i += 1    
+    
     def setTableWidgetData(self):
         self.dbTable.setFont(QFont('맑은 고딕',10))
         i = 0
@@ -473,7 +486,34 @@ class MyApp(QMainWindow, QWidget):
         self.lbl.setText(text)
         self.lbl.adjustSize()
     def delete_one(self):
-        pass
+
+        # 화면의 배경색상을 흰색으로 설정해줍니다. 
+        pal = QPalette()  
+        pal.setColor(QPalette.Background,QColor(255,255,255))
+        self.setAutoFillBackground(True)
+        self.setPalette(pal)  
+        
+        # 그리드 레이아웃으로 화면을 구성합니다. 
+        grid = QGridLayout()
+        self.setLayout(grid)
+
+        self.dbTable = QTableWidget(self)
+        self.db.update()
+        self.dbTable.setRowCount(self.db.line)
+        self.dbTable.setColumnCount(6)
+        self.dbTable.setHorizontalHeaderLabels(["삭제 여부","요일", "알람 시간", "과목 이름", "줌 회의 아이디", "줌 회의 비밀번호", "알람 소리 여부"])
+        self.setTableWidgetData_deletion()
+
+        #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
+        grid.addWidget(self.dbTable, 1,0)
+
+        vbox = QWidget(self)
+        self.setCentralWidget(vbox)
+        vbox.setLayout(grid)
+
+        self.resize(600, 800)
+        self.show()
+        
     def check_alarm(self):
         # 현재 시각을 구한다. 
         dy_lis = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
