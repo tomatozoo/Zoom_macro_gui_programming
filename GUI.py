@@ -5,7 +5,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QCoreApplication, QDate, Qt
 from PyQt5 import QtSql
+import os
 import time
+import threading
+import datetime
+import json
+import webbrowser
 
 class DB():
     def __init__(self):
@@ -14,25 +19,25 @@ class DB():
         # 데이터 삽입
         # connection 객체인 con을 이용해서 cursor 객체를 생성함
         self.cursor = self.con.cursor()
+        
         try:
-            # 새로 테이블을 만들어야 하는 경우
-            self.cursor.execute("CREATE table alarm (DAY VARCHAR2(200 BYTE), HOURMIN VARCHAR2(200 BYTE), SUBJECT VARCHAR2(200 BYTE), ZOOMID NUMBER(10,2), ZOOMPW NUMBER(10,2), SOUND NUMBER(10,2))")
+            self.cursor.execute("CREATE table zoomlist (DAYLIST TEXT, HOURMIN TEXT, SUBJECTNAME TEXT, ZOOMID INTEGER, ZOOMPW TEXT, SOUND INTEGER)")
         except:
             # 그러지 않아도 되는 경우
             pass   
         self.line = 0     
     def create(self, row_list):
-        self.cursor.execute("INSERT INTO alarm VALUES (?, ?, ?, ?, ?, ?)", row_list)
+        self.cursor.execute("INSERT INTO zoomlist VALUES (?, ?, ?, ?, ?, ?)", row_list)
         self.con.commit()
     def read(self):
         print('hi')
-        for row in self.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+        for row in self.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
             print(row)
         self.con.commit()
 
     def update(self):
         self.line = 0
-        for row in self.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+        for row in self.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
             self.line += 1
         self.con.commit()
 
@@ -442,7 +447,7 @@ class MyApp(QMainWindow, QWidget):
         
         subject_data = self.subjectName_input.text() 
         id_data = int(self.zoomID_input.text())
-        pw_data = int(self.zoomPW_input.text())
+        pw_data = self.zoomPW_input.text()
         
         new_row = [day_data, total_time_data, subject_data, id_data, pw_data, sound_data]
         self.db.create(new_row)
@@ -453,7 +458,7 @@ class MyApp(QMainWindow, QWidget):
     def setTableWidgetData(self):
         self.dbTable.setFont(QFont('맑은 고딕',10))
         i = 0
-        for row in self.db.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+        for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
             self.dbTable.setItem(i,0,QTableWidgetItem(f'{row[0]}'))
             self.dbTable.setItem(i,1,QTableWidgetItem(f'{row[1]}'))
             self.dbTable.setItem(i,2,QTableWidgetItem(f'{row[2]}'))
@@ -471,11 +476,43 @@ class MyApp(QMainWindow, QWidget):
         self.lbl.adjustSize()
 
     def check_alarm(self):
-        for row in self.db.cursor.execute('SELECT * FROM alarm ORDER BY SOUND'):
+        # 현재 시각을 구한다. 
+        dy_lis = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+        xc = datetime.datetime.now()
+        t = time.localtime()
+        yr = str(t.tm_year) # 년
+        mo = str(t.tm_mon) # 월
+        dt = str(t.tm_mday) # 일
+        dy = dy_lis[t.tm_wday]
+
+        # 알람 울릴 다음 시간과 줌 접속 정보를 가져온다. 
+        today_alarm_list = []
+        now_time = time.strftime("%H:%M", t)
+        for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY DAYLIST'):
+            if dy == row[0]:
+                today_alarm_list.append(row)
+        
+        # 수업에 접속한다. 
+        subject = '인터뷰'
+        professor = '토마토'
+        id = '83966708197'
+        pw = 'snuroedm'
+        url = 'zoommtg://zoom.us/join?confno={}&pwd={}'.format(id, pw)
+        min_left = 0
+        
+        # 수업에 접속하기
+        if 0 <= min_left <= 5:
+            webbrowser.open(url)
+            #playsound('sounds/alarm.wav', block=False)
+        elif 10 <= min_left < 11:
+            pass
+        else:
             pass
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
    app = QApplication(sys.argv)
    ex = MyApp()
+   ex.check_alarm()
    sys.exit(app.exec_())

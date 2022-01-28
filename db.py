@@ -13,7 +13,7 @@ cursor = con.cursor()
 
 try:
     # 새로 테이블을 만들어야 하는 경우
-    cursor.execute("CREATE table alarm(DAY VARCHAR2(200 BYTE), HOURMIN VARCHAR2(200 BYTE), SUBJECT VARCHAR2(200 BYTE), ZOOMID NUMBER(10,2), ZOOMPW NUMBER(10,2), SOUND NUMBER(10,2))")
+    cursor.execute("CREATE table alarm(DAY TEXT, HOURMIN TEXT, SUBJECT TEXT, ZOOMID INTEGER, ZOOMPW TEXT, SOUND INTEGER)")
 except:
     # 그러지 않아도 되는 경우
     pass
