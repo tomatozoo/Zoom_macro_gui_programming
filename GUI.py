@@ -33,15 +33,13 @@ class DB():
         for row in self.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
             print(row)
         self.con.commit()
-
     def update(self):
         self.line = 0
         for row in self.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
             self.line += 1
         self.con.commit()
-
-    def delete(self):
-        self.cursor.execute("")
+    def delete(self, where):
+        self.cursor.execute("DELETE FROM zoomlist WHERE HOURMIN = ? AND SUBJECTNAME = ? AND ZOOMID = ? AND ZOOMPW = ? AND SOUND = ?", where)
         self.con.commit()
   
 # 메인 클래스를 계획합니다. 
@@ -344,7 +342,7 @@ class MyApp(QMainWindow, QWidget):
         subjectName = QLabel('Subject Name :')
         subjectName.setFont(QFont('맑은 고딕',20))
         sub_grid3.addWidget(subjectName, 0, 0)
-        zoomID = QLabel('Zoom PMI :')
+        zoomID = QLabel('Zoom PMI (숫자만):')
         zoomID.setFont(QFont('맑은 고딕',20))
         sub_grid3.addWidget(zoomID, 1, 0)
         zoomPW = QLabel('Zoom Password :')
@@ -417,7 +415,7 @@ class MyApp(QMainWindow, QWidget):
 
         sub_grid5.addWidget(cancel, 0,1)
         grid.addLayout(sub_grid5, 4, 0)
-                        
+
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
         vbox.setLayout(grid)
@@ -426,50 +424,74 @@ class MyApp(QMainWindow, QWidget):
         self.show()    
 
     def OK_clicked(self):
-        # 데이터를 수집합니다. 
-        day_data = self.clicked_days[0].text() # 요일
-        
-        time_data = self.clicked_times[0].text() # 오전 오후
-        hour_data = int(self.hour.currentText())
-        min_data = int(self.min.currentText())
-        if time_data == 'AM':
-            total_time_data = str(f'{hour_data}:{min_data}')
-        else:
-            total_time_data = str(f'{hour_data+12}:{min_data}')
-        
-        sound_data = self.clicked_sounds[0].text() # 소리 유무
-        if sound_data == 'On':
-            sound_data = 1 # on은 1
-        else:
-            sound_data = 0 # off는 0
-        
-        subject_data = self.subjectName_input.text() 
-        id_data = int(self.zoomID_input.text())
-        pw_data = self.zoomPW_input.text()
-        
-        new_row = [day_data, total_time_data, subject_data, id_data, pw_data, sound_data]
-        self.db.create(new_row)
-        
-        self.initUI()
-        self.initSETTING()
-        
+        try:
+            # 데이터를 수집합니다. 
+            day_data = self.clicked_days[0].text() # 요일
+            
+            time_data = self.clicked_times[0].text() # 오전 오후
+            hour_data = int(self.hour.currentText())
+            min_data = int(self.min.currentText())
+            if time_data == 'AM':
+                total_time_data = str(f'{hour_data}:{min_data}')
+            else:
+                total_time_data = str(f'{hour_data+12}:{min_data}')
+            
+            sound_data = self.clicked_sounds[0].text() # 소리 유무
+            if sound_data == 'On':
+                sound_data = 1 # on은 1
+            else:
+                sound_data = 0 # off는 0
+            
+            subject_data = self.subjectName_input.text() 
+            id_data = int(self.zoomID_input.text())
+            pw_data = self.zoomPW_input.text()
+            
+            new_row = [day_data, total_time_data, subject_data, id_data, pw_data, sound_data]
+            print(new_row)
+            self.db.create(new_row)
+            
+            self.initUI()
+            self.initSETTING()
+        except:
+            msg = QMessageBox()
+            msg.setWindowTitle('WARNING')
+            msg.setText('입력 양식을 지켜주세요')
+            msg.setWindowIcon(QIcon('./images/edit.png'))
+            msg.setStandardButtons(QMessageBox.Ok)
+            result = msg.exec_()
+            if result == QMessageBox.Ok:
+                pass        
     def setTableWidgetData_deletion(self):
         self.dbTable.setFont(QFont('맑은 고딕',10))
+        self.checkBoxList = []
+        for i in range(self.db.line):
+            ckbox = QCheckBox()
+            self.checkBoxList.append(ckbox)
+            
+        for i in range(self.db.line):
+            cellWidget = QWidget()
+            layoutCB = QHBoxLayout(cellWidget)
+            layoutCB.addWidget(self.checkBoxList[i])
+            layoutCB.setAlignment(Qt.AlignCenter)
+            layoutCB.setContentsMargins(0,0,0,0)
+            cellWidget.setLayout(layoutCB)
+            
+            self.dbTable.setCellWidget(i,0,cellWidget)
+            
         i = 0
         for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
-            cb = QCheckBox()
-            self.dbTable.setItem(i,0,QTableWidgetItem(cb))
             self.dbTable.setItem(i,1,QTableWidgetItem(f'{row[1]}'))
             self.dbTable.setItem(i,2,QTableWidgetItem(f'{row[2]}'))
             self.dbTable.setItem(i,3,QTableWidgetItem(f'{row[3]}'))
             self.dbTable.setItem(i,4,QTableWidgetItem(f'{row[4]}'))
             self.dbTable.setItem(i,5,QTableWidgetItem(f'{row[5]}'))
+            
             i += 1    
-    
+
     def setTableWidgetData(self):
         self.dbTable.setFont(QFont('맑은 고딕',10))
         i = 0
-        for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
+        for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY DAYLIST'):
             self.dbTable.setItem(i,0,QTableWidgetItem(f'{row[0]}'))
             self.dbTable.setItem(i,1,QTableWidgetItem(f'{row[1]}'))
             self.dbTable.setItem(i,2,QTableWidgetItem(f'{row[2]}'))
@@ -506,14 +528,50 @@ class MyApp(QMainWindow, QWidget):
 
         #grid.addWidget(QLabel('SQL DB가 올 자리입니다 :)'), 1,0)
         grid.addWidget(self.dbTable, 1,0)
+        
+        sub_grid5 = QGridLayout()
+    
+        OK = QPushButton('Delete', self)
+        OK.setFont(QFont('맑은 고딕',20))
+        OK.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
+        OK.setMaximumHeight(30)
+        OK.setCheckable(False)
+        OK.toggle()
+        OK.clicked.connect(self.OK_clicked_delete)
 
+        sub_grid5.addWidget(OK, 0,0)
+        
+        cancel = QPushButton('Cancel', self)
+        cancel.setFont(QFont('맑은 고딕',20))
+        cancel.setStyleSheet('QPushButton {background-color: dodgerblue;color:white;}')
+        cancel.setMaximumHeight(30)
+        cancel.setCheckable(False)
+        cancel.toggle()
+        cancel.clicked.connect(self.cancel_clicked)
+
+        sub_grid5.addWidget(cancel, 0,1)
+        grid.addLayout(sub_grid5, 2, 0)
+                        
+        
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
         vbox.setLayout(grid)
 
         self.resize(600, 800)
         self.show()
+    
+    def OK_clicked_delete(self):
+        for i in range(self.db.line):
+            if self.checkBoxList[i].isChecked() == True:
+                tmp_row = []
+                for j in range(1,6):
+                    tmp_row.append(self.dbTable.item(i,j).text())
+                self.db.delete(tmp_row)
+
         
+        self.initUI()
+        self.initSETTING()
+
     def check_alarm(self):
         # 현재 시각을 구한다. 
         dy_lis = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -538,47 +596,49 @@ class MyApp(QMainWindow, QWidget):
                 alarm_time = yr + mo + dt + row[1]
                 alarm_time = datetime.datetime.strptime(alarm_time, "%Y%m%d%H:%M")
                 today_alarm_list.append([row, alarm_time])
-
+                print(today_alarm_list)
+        
         # 그 중에서 현재 시각과 가장 가깝고 * 아직 지나지 않은 시간을 찾아낸다. 
-        next_time = [[],[]]
+        next_time = today_alarm_list[0]
         for i, j in today_alarm_list:
             if now_time <= j:
-                next_time[0].append(j)
-                next_time[1].append(i)
-        next_time_index = next_time[0].index(min(next_time[0]))
-        print(next_time[1][next_time_index])
+                if j <= next_time[1]:
+                    next_time = [i, j]
+
+        subject = next_time[0][2]
+        zoomid = next_time[0][3]
+        zoompw = next_time[0][4]
+        sound = next_time[0][5]
         
-        subject = next_time[1][next_time_index][2]
-        zoomid = next_time[1][next_time_index][3]
-        zoompw = next_time[1][next_time_index][4]
-        sound = next_time[1][next_time_index][4]
         
         # 수업에 접속한다. 
         url = 'zoommtg://zoom.us/join?confno={}&pwd={}'.format(zoomid, zoompw)
-        min_left = 0
-
+        min_left = (next_time[1] - now_time)
+        
+        print(min_left)
         print(subject, zoomid, zoompw, sound)
         
         # 수업에 접속하기
         if 0 <= min_left <= 5:
-            webbrowser.open(url)
+            #webbrowser.open(url)
             if sound == 1:
                 #playsound('sounds/alarm.wav', block=False)
                 pass
             else:
                 pass
-            msg = QMessageBox()
-            msg.setWindowTitle('수업 시작합니다')
-            msg.setText('')
-            msg.setStandardButtons(QMessageBox.Ok)
-            result = msg.exec_()
-            if result == QMessageBox.Ok:
-                pass
+            #msg = QMessageBox()
+            #msg.setWindowTitle('수업 시작합니다')
+            #msg.setText('')
+            #msg.setStandardButtons(QMessageBox.Ok)
+            #result = msg.exec_()
+            #if result == QMessageBox.Ok:
+            #    pass
             
         elif 10 <= min_left < 11:
             pass
         else:
             pass
+        
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
