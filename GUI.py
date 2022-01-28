@@ -30,7 +30,6 @@ class DB():
         self.cursor.execute("INSERT INTO zoomlist VALUES (?, ?, ?, ?, ?, ?)", row_list)
         self.con.commit()
     def read(self):
-        print('hi')
         for row in self.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
             print(row)
         self.con.commit()
@@ -42,6 +41,7 @@ class DB():
         self.con.commit()
 
     def delete(self):
+        self.cursor.execute("")
         self.con.commit()
   
 # 메인 클래스를 계획합니다. 
@@ -89,7 +89,7 @@ class MyApp(QMainWindow, QWidget):
         dele.setMaximumHeight(100)
         dele.setCheckable(False)
         dele.toggle()
-        #dele.clicked.connect(self.btn1_clicked)
+        dele.clicked.connect(self.delete_one)
 
         grid.addWidget(dele, 1,0)
 
@@ -106,8 +106,6 @@ class MyApp(QMainWindow, QWidget):
         vbox = QWidget(self)
         self.setCentralWidget(vbox)
         vbox.setLayout(grid)
-
-
 
         self.resize(600, 800)
         self.show()
@@ -474,7 +472,8 @@ class MyApp(QMainWindow, QWidget):
     def onActivated(self, text):
         self.lbl.setText(text)
         self.lbl.adjustSize()
-
+    def delete_one(self):
+        pass
     def check_alarm(self):
         # 현재 시각을 구한다. 
         dy_lis = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -483,28 +482,59 @@ class MyApp(QMainWindow, QWidget):
         t = time.localtime()
         yr = str(t.tm_year) # 년
         mo = str(t.tm_mon) # 월
+        if len(mo) == 1:
+            mo = '0' + mo
         dt = str(t.tm_mday) # 일
         dy = dy_lis[t.tm_wday]
-
+        print(yr, mo, dt, dy)
         # 알람 울릴 다음 시간과 줌 접속 정보를 가져온다. 
         today_alarm_list = []
         now_time = time.strftime("%H:%M", t)
+        now_time = datetime.datetime.strptime(now_time, "%H:%M")
+
         for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY DAYLIST'):
-            if dy == row[0]:
-                today_alarm_list.append(row)
+            if dy == row[0]: # 같은 요일만 추출함
+                print(row[0])
+                alarm_time = yr + mo + dt + row[1]
+                alarm_time = datetime.datetime.strptime(alarm_time, "%Y%m%d%H:%M")
+                today_alarm_list.append([row, alarm_time])
+
+        # 그 중에서 현재 시각과 가장 가깝고 * 아직 지나지 않은 시간을 찾아낸다. 
+        next_time = [[],[]]
+        for i, j in today_alarm_list:
+            if now_time <= j:
+                next_time[0].append(j)
+                next_time[1].append(i)
+        next_time_index = next_time[0].index(min(next_time[0]))
+        print(next_time[1][next_time_index])
+        
+        subject = next_time[1][next_time_index][2]
+        zoomid = next_time[1][next_time_index][3]
+        zoompw = next_time[1][next_time_index][4]
+        sound = next_time[1][next_time_index][4]
         
         # 수업에 접속한다. 
-        subject = '인터뷰'
-        professor = '토마토'
-        id = '83966708197'
-        pw = 'snuroedm'
-        url = 'zoommtg://zoom.us/join?confno={}&pwd={}'.format(id, pw)
+        url = 'zoommtg://zoom.us/join?confno={}&pwd={}'.format(zoomid, zoompw)
         min_left = 0
+
+        print(subject, zoomid, zoompw, sound)
         
         # 수업에 접속하기
         if 0 <= min_left <= 5:
             webbrowser.open(url)
-            #playsound('sounds/alarm.wav', block=False)
+            if sound == 1:
+                #playsound('sounds/alarm.wav', block=False)
+                pass
+            else:
+                pass
+            msg = QMessageBox()
+            msg.setWindowTitle('수업 시작합니다')
+            msg.setText('')
+            msg.setStandardButtons(QMessageBox.Ok)
+            result = msg.exec_()
+            if result == QMessageBox.Ok:
+                pass
+            
         elif 10 <= min_left < 11:
             pass
         else:
