@@ -613,7 +613,7 @@ class MyApp(QMainWindow, QWidget):
         
         # 수업에 접속한다. 
         url = 'zoommtg://zoom.us/join?confno={}&pwd={}'.format(zoomid, zoompw)
-        min_left = (next_time[1] - now_time)
+        min_left = 0 #(next_time[1] - now_time)
         
         print(min_left)
         print(subject, zoomid, zoompw, sound)
