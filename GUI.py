@@ -58,6 +58,7 @@ class MyApp(QMainWindow, QWidget):
         self.timer = QTimer(self)
         self.timer.start(1000)
         self.timer.timeout.connect(self.check_alarm)
+        self.true = True
         
         
     # UI에 포함될 구성요소의 기본적인 설정을 수행해줍니다. 
@@ -624,35 +625,26 @@ class MyApp(QMainWindow, QWidget):
         print(min_left)
         print(subject, zoomid, zoompw, sound)
         
-        alarm_bell()
-    
-    def alarm_bell(self, now_time, min_left, sound, subject, url):
-        # 수업에 접속하기
-        alarm = 0
-        if 0 <= min_left <= 5:
-            if alarm:
-                pass
-            webbrowser.open(url)
-            if sound == 1:
-                music = QSound("sounds/alarm.wav")
-                music.play()
-                #playsound('sounds/alarm.wav', block=False)
+        while self.true:
+            if 0 <= min_left <= 5:
+                webbrowser.open(url)
+                if sound == 1:
+                    music = QSound('sounds/alarm.wav')
+                    music.play()
+                msg = QMessageBox()
+                msg.setWindowTitle('수업 시작합니다')
+                msg.setWindowIcon(QIcon('./images/web.png'))
+                msg.setText(f'{min_left} 분 후 \n{subject} 수업이 시작됩니다')
+                msg.setStandardButtons(QMessageBox.Ok)
+                result = msg.exec_()
+                if result == QMessageBox.Ok:
+                    pass
+                self.true = False
             else:
-                pass
-            msg = QMessageBox()
-            msg.setWindowTitle('수업 시작합니다')
-            msg.setWindowIcon(QIcon('./images/web.png'))
-            msg.setText(f'{min_left} 분 후 \n{subject} 수업이 시작됩니다')
-            msg.setStandardButtons(QMessageBox.Ok)
-            result = msg.exec_()
-            if result == QMessageBox.Ok:
-                pass
-            
-        elif 10 <= min_left < 11:
-            pass
-        else:
-            pass
-        
+                break
+                
+        if 5 <= min_left <= 10:
+            self.true = True
 
 # 메인에서 실행해줍니다. 
 if __name__ == '__main__':
