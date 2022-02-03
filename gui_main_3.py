@@ -32,7 +32,7 @@ class DB():
         self.con.commit()
     def read(self):
         for row in self.cursor.execute('SELECT * FROM zoomlist ORDER BY SOUND'):
-            pass #print(row)
+            print(row)
         self.con.commit()
     def update(self):
         self.line = 0
@@ -60,6 +60,7 @@ class MyApp(QMainWindow, QWidget):
             self.timer.start(1000)
             self.timer.timeout.connect(self.check_alarm)
             self.true = True
+            self.current = True
         except:
             msg = QMessageBox()
             msg.setWindowTitle('ERROR')
@@ -514,7 +515,7 @@ class MyApp(QMainWindow, QWidget):
             pw_data = self.zoomPW_input.text()
             
             new_row = [day_data, total_time_data, subject_data, id_data, pw_data, sound_data]
-            #print(new_row)
+            print(new_row)
             self.db.create(new_row)
             
             self.initUI()
@@ -690,6 +691,7 @@ class MyApp(QMainWindow, QWidget):
                 pass
     def check_alarm(self):
         # 현재 시간을 구해줍니다.
+        try:
             dy_lis = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
             xc = datetime.datetime.now()
@@ -699,34 +701,22 @@ class MyApp(QMainWindow, QWidget):
             if len(mo) == 1:
                 mo = '0' + mo
             dt = str(t.tm_mday) # 일
-            if len(dt) == 1:
-                dt = '0' + dt
             dy = dy_lis[t.tm_wday]
-            #print(yr, mo, dt, dy)
+
             # 알람 울릴 다음 시간과 줌 접속 정보를 가져온다. 
-            now_time = time.strftime("%Y%m%d%H:%M", t)
-            now_time = datetime.datetime.strptime(now_time, "%Y%m%d%H:%M")
+            now_time = time.strftime("%H:%M", t)
+            now_time = datetime.datetime.strptime(now_time, "%H:%M")
 
             next_alarm_time = now_time
             next_alarm_info = []
             for row in self.db.cursor.execute('SELECT * FROM zoomlist ORDER BY DAYLIST'):
                 if dy == row[0]: # 같은 요일만 추출함
-                    if len(row[1][0])==1:
-                        hour = '0'+row[1][0]
-                    if len(row[1][1])==1:
-                        min = '0' + row[1][1]
-                    alarm_time = yr + mo + dt + hour + ':' + min
+                    alarm_time = yr + mo + dt + row[1]
                     alarm_time = datetime.datetime.strptime(alarm_time, "%Y%m%d%H:%M")
-                    
-                    # 잠재적 alarm_time
-                    print('now_time', now_time)
-                    print('alarm_time', alarm_time)
-                    if now_time <= alarm_time and alarm_time <= next_alarm_time:
-                        print('hi')
+                    if now_time <= alarm_time or alarm_time < next_alarm_time:
                         next_alarm_time = alarm_time
                         next_alarm_info = row
-            
-            print('alarm_time : time version', next_alarm_time)
+
             if len(next_alarm_info) >= 6:
                 # 접속할 수업이 있는 경우, 
                 zoomid = next_alarm_info[3]
@@ -735,6 +725,7 @@ class MyApp(QMainWindow, QWidget):
                 sound = next_alarm_info[5]
                 url = 'zoommtg://zoom.us/join?confno={}&pwd={}'.format(zoomid, zoompw)
 
+                
                 try:
                     min_left = str(next_alarm_time - now_time) # str(next_alarm_time - now_time)[-8:]
                     min_left = min_left.split(' ')[2]
@@ -742,29 +733,26 @@ class MyApp(QMainWindow, QWidget):
                     min_left = int(min_left[0]) * 60 + int(min_left[1])
                 except:
                     min_left = 10
-
-                while self.true:
-                    if min_left == 0:
-                        self.true = True
-                    if 0 < min_left <= 5:
-                        webbrowser.open(url)
-                        if sound == 1:
-                            music = QSound('sounds/alarm.wav')
-                            music.play()
-                        msg = QMessageBox()
-                        msg.setWindowTitle('수g업 시작합니다')
-                        msg.setWindowIcon(QIcon('./images/web.png'))
-                        msg.setText(f'{min_left} 분 후 \n{subject} 수업이 시작됩니다')
-                        msg.setStandardButtons(QMessageBox.Ok)
-                        result = msg.exec_() 
-                        self.true = False
-                        if result == QMessageBox.Ok:
-                            break
-                    else:
-                        break
-                        
-                if 5 <= min_left <= 10:
-                    self.true = True
+            print(now_time)
+            if 0 <= min_left <= 5:
+                    webbrowser.open(url)
+                    if sound == 1:
+                        music = QSound('sounds/alarm.wav')
+                        music.play()
+                    msg = QMessageBox()
+                    msg.setWindowTitle('수업 시작합니다')
+                    msg.setWindowIcon(QIcon('./images/web.png'))
+                    msg.setText(f'{min_left} 분 후 \n{subject} 수업이 시작됩니다')
+                    msg.setStandardButtons(QMessageBox.Ok)
+                    result = msg.exec_()
+                    if result == QMessageBox.Ok:
+                        pass
+            else:
+                    pass
+                    
+                
+        except:
+            pass
 
 # 메인에서 실행해줍니다. 
 app = QApplication(sys.argv)
