@@ -701,7 +701,7 @@ class MyApp(QMainWindow, QWidget):
                 mo = '0' + mo
             dt = str(t.tm_mday) # 일
             dy = dy_lis[t.tm_wday]
-            print(yr, mo, dt, dy)
+            #print(yr, mo, dt, dy)
             # 알람 울릴 다음 시간과 줌 접속 정보를 가져온다. 
             now_time = time.strftime("%H:%M", t)
             now_time = datetime.datetime.strptime(now_time, "%H:%M")
@@ -734,7 +734,7 @@ class MyApp(QMainWindow, QWidget):
                 except:
                     min_left = 10
 
-            while self.true:
+            while True:
                 if 0 <= min_left <= 5:
                     webbrowser.open(url)
                     if sound == 1:
@@ -745,10 +745,10 @@ class MyApp(QMainWindow, QWidget):
                     msg.setWindowIcon(QIcon('./images/web.png'))
                     msg.setText(f'{min_left} 분 후 \n{subject} 수업이 시작됩니다')
                     msg.setStandardButtons(QMessageBox.Ok)
+                    self.db.delete(next_alarm_info[1:])
                     result = msg.exec_()
                     if result == QMessageBox.Ok:
-                        pass
-                    self.true = False
+                        break
                 else:
                     break
                     
