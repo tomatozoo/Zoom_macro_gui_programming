@@ -734,8 +734,10 @@ class MyApp(QMainWindow, QWidget):
                 except:
                     min_left = 10
 
-            while True:
-                if 0 <= min_left <= 5:
+            while self.true:
+                if min_left == 0:
+                    self.true = True
+                if 0 < min_left <= 5:
                     webbrowser.open(url)
                     if sound == 1:
                         music = QSound('sounds/alarm.wav')
@@ -745,9 +747,11 @@ class MyApp(QMainWindow, QWidget):
                     msg.setWindowIcon(QIcon('./images/web.png'))
                     msg.setText(f'{min_left} 분 후 \n{subject} 수업이 시작됩니다')
                     msg.setStandardButtons(QMessageBox.Ok)
-                    self.db.delete(next_alarm_info[1:])
-                    result = msg.exec_()
+                    result = msg.exec_() 
+                    self.true = False
                     if result == QMessageBox.Ok:
+                       
+                       
                         break
                 else:
                     break
